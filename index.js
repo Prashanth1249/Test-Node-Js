@@ -105,7 +105,7 @@ app.post("/insertThousandRiders", async (req, res) => {
         name: `Rider_${i}`,
         isActive: true,
         supervisor: "Manager A",
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
       counter++;
