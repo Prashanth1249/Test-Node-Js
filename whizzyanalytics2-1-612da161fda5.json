@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "whizzyanalytics2-1",
+  "private_key_id": "612da161fda50ba66165f462fc16002eb8ed3018",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQClH5lBqA+zfDXK\nHJl+r+zv1eZroO+Bu9i6ulSkmHj+a+pcOIeBnsINfU1kOIWceWg640PLpYIFuPBt\n/QEoEvMxbIBuxpwgrMTvdwoDMzcXs+cIXm3vMufojb7yz5XMfe6BNaG6d5QZqHiG\nzwgirX9EXvLD84JmcSWXqC5zZfOlAdfxaLu1YNUTRaE/LHS9mNEYir0y94I3qrRz\n3ATmo0nwnmiH2Wgdlk/xF122VsRwbbp/xKV7GPHekrj1Q1xzdOlHLevk4c0ukAgy\npmgDemHSPTOS/+Q63JDuAwMjQjIokbRSJZ/cG7thsby/hJqlAHySok2cPDXEYqLd\neajcHbNZAgMBAAECggEACl96zDIXkmnqIyE6z0eT9dkVGYvJn/fB/LD54kEl0K3M\n0jBG6vCjNh+5/eLDGfpSfuiJ+MAT8/ITQIWVTgQqvN8ZDlxxsGfKE1UCDwNnoZiO\nmer8svsasHQ/G5fIzEjY88r/tuwOJLJ9p9JXq34EsbHZRFAG0BKpjuZkzKEJ9kKW\nXWPNCVER1ynWrJK4X6PNHt/2wp5DjJQPyt5QkJK1rx1Rhj3GgK3waZG9Uapl3Dnk\n/FnAF0MesyjltBZIjIbd4gB1ecvuFX1tONgFmXNpKN6dK+fWLavMduDTIj8d+5LX\njcnkD2M8pfV1gh/wrHsP/xz7RbpD/8R0h+jjnYMlRQKBgQDoKcJaoBlU7REl3iov\nKUnnFe7I5TAWSLnD0yJ0por30rzpq83R5r+b54gURyGv92GGxHeGl5tze4IGS5Wg\nY0wolpntRR3V1RCnK5DKaNI5ZQCGB7oC0zBDVPrIVGUkAunNqiy5XdZ0oZOzlCgr\nRMLJ0N7WJCVjr5EDmtZAaQWNDwKBgQC2E7/Y1jiRPAzx3ua6lPs7rJt6w/vkY15b\nFh3Fy5zQG1TNTCOqtKp8mi8JjJMQtAK8w4aMc30feyeG42I1BHF6rpEqsdXB6Or4\nbA0xkOTPDg07KRaeF+VghV1qzrk5gbHnfMp13aNass3LA5lyhWEsjxZUipXvnYbs\nh2J1S8+JFwKBgQDS/zDeAGdFYfeVvOYF2raJyMst1e3wMsRyDu9fqQTf2q1KiZQT\nUm2OGcz48PTS4jfGrcQblKn5OKShaAxiqhxLPyRCGfDVqEDsTZHYA5AcDYl+RoNt\nkdZpO1B4xQruwZ8QBbuD9J61fSupp9siB+ooVSZQ5KT+hk97QTu7ajdbTQKBgGZc\nfAJ/jJW52N0xny1ODF/kDhTakYY4hxdWO66zZZlphCdWosaZgy9BzyfjK9q8GL3e\nfon/c1x7dCFVPCTqNpHuChaim7XEKDU5KcGv37K4B6A23UxLytyUnYwqY998lnO5\nqGjTDb8zvpZfk6jaa2MNnlQxBVIMkYnwIt4mnKpJAoGBAKeiWvAeo9pCRU3Ta2bM\no6HXhSA/T3+14G0QrXN75a8w101IH7D9TqgAQzqpxEtdsONd76QndLuUD3KgdefF\nAvQd8L+cwQ1kfepj8PKci+fNGUkt2Ck11CnPNr1p+iNAH4w0NEgSbjlgKjhBSqev\ndvRkvDAyd78imEHHGhzOOy5p\n-----END PRIVATE KEY-----\n",
+  "client_email": "node-firestore-admin@whizzyanalytics2-1.iam.gserviceaccount.com",
+  "client_id": "100379450430899302117",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/node-firestore-admin%40whizzyanalytics2-1.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
