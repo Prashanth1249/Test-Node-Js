@@ -24,7 +24,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 const app = express();
-
+app.use(express.json());
 app.get("/getRiders", async (req, res) => {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Only GET method is allowed" });
