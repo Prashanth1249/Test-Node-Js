@@ -25,16 +25,26 @@ const db = admin.firestore();
 const app = express();
 
 app.get("/getRiders", async (req, res) => {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Only GET method is allowed" });
+  }
+
   try {
-    const snapshot = await db.collection("Riders").get();
-    const ridersList = snapshot.docs.map(doc => ({
+    const ridersSnapshot = await db.collection("Riders").get();
+    const ridersList = ridersSnapshot.docs.map(doc => ({
       id: doc.id,
-      ...doc.data()
+      name: doc.data().name || null,
+      isActive: doc.data().isActive || null,
+      supervisor: doc.data().supervisor || null
     }));
-    res.json({ count: ridersList.length, riders: ridersList });
+
+    return res.status(200).json({
+      count: ridersList.length,
+      riders: ridersList
+    });
   } catch (error) {
-    console.error("❌ Firestore error:", error);
-    res.status(500).json({ error: "Failed to fetch riders" });
+    console.error("Error fetching riders:", error);
+    return res.status(500).json({ error: "Failed to fetch riders" });
   }
 });
 
