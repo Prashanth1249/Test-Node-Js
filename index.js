@@ -89,5 +89,42 @@ app.post("/addTestCollectionBulk", async (req, res) => {
   }
 });
 
+app.post("/insertThousandRiders", async (req, res) => {
+  try {
+    const collectionName = "DummyRiders-Express";  
+    const collectionRef = db.collection(collectionName);
+
+    let batch = db.batch();
+    let counter = 0;
+
+    for (let i = 1; i <= 1000; i++) {
+      const docId = i.toString();               
+      const docRef = collectionRef.doc(docId);
+
+      batch.set(docRef, {
+        name: `Rider_${i}`,
+        isActive: true,
+        supervisor: "Manager A",
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+
+      counter++;
+      if (counter === 500 || i === 1000) {
+        await batch.commit();
+        batch = db.batch();
+        counter = 0;
+      }
+    }
+
+    return res.status(201).json({
+      message: `✅ Successfully inserted 1000 riders into collection '${collectionName}' with document IDs 1 to 1000`
+    });
+  } catch (error) {
+    console.error("❌ Error inserting dummy riders:", error);
+    return res.status(500).json({ error: "Failed to insert dummy riders" });
+  }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
