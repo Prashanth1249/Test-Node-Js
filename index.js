@@ -5,7 +5,7 @@ const serviceAccount = {
   type: process.env.TYPE,
   project_id: process.env.PROJECT_ID,
   private_key_id: process.env.PRIVATE_KEY_ID,
-  private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'), // 👈 important
+  private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'), 
   client_email: process.env.CLIENT_EMAIL,
   client_id: process.env.CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
@@ -45,6 +45,46 @@ app.get("/getRiders", async (req, res) => {
   } catch (error) {
     console.error("Error fetching riders:", error);
     return res.status(500).json({ error: "Failed to fetch riders" });
+  }
+});
+
+
+app.post("/addTestCollectionBulk", async (req, res) => {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Only POST method is allowed" });
+  }
+  try {
+    const data = req.body;
+    if (!Array.isArray(data) || data.length === 0) {
+      return res.status(400).json({ error: "Request body must be a non-empty array" });
+    }
+
+    if (data.length > 1000) {
+      return res.status(400).json({ error: "Maximum 1000 records allowed per request" });
+    }
+
+    const batch = db.batch();
+    const collectionRef = db.collection("Express-Collection");
+
+    data.forEach((item, index) => {
+      const docId = (index + 1).toString();
+      const docRef = collectionRef.doc(docId);
+      batch.set(docRef, {
+        name: item.name || null,
+        isActive: item.isActive ?? true,
+        supervisor: item.supervisor || null,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    });
+
+    await batch.commit();
+
+    return res.status(201).json({
+      message: `✅ Successfully inserted ${data.length} records into Express-Collection with numeric IDs`
+    });
+  } catch (error) {
+    console.error("❌ Error inserting data:", error);
+    return res.status(500).json({ error: "Failed to insert records" });
   }
 });
 
