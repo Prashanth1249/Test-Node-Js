@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require("express");
+const cors = require("cors"); 
 const admin = require("firebase-admin");
+const bodyParser = require("body-parser");
 
 const serviceAccount = {
   type: process.env.TYPE,
@@ -24,7 +26,16 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 const app = express();
-app.use(express.json());
+// app.use(express.json());
+app.use(cors({
+  origin: "*", // 👈 if your frontend runs on Vite dev server
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
+}));
+
+app.use(bodyParser.json({ limit: "50mb" }));
+
+
 app.get("/getRiders", async (req, res) => {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Only GET method is allowed" });
@@ -56,6 +67,8 @@ app.post("/addTestCollectionBulk", async (req, res) => {
   }
   try {
     const data = req.body;
+    console.log(req.body);
+    console.log(req);
     if (!Array.isArray(data) || data.length === 0) {
       return res.status(400).json({ error: "Request body must be a non-empty array" });
     }
@@ -105,7 +118,7 @@ app.post("/insertThousandRiders", async (req, res) => {
         name: `Rider_${i}`,
         isActive: true,
         supervisor: "Manager A",
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
       counter++;
@@ -122,6 +135,128 @@ app.post("/insertThousandRiders", async (req, res) => {
   } catch (error) {
     console.error("❌ Error inserting dummy riders:", error);
     return res.status(500).json({ error: "Failed to insert dummy riders" });
+  }
+});
+
+
+app.post("/bulkAddVehicles", async (req, res) => {
+  try {
+    const vehicles = req.body;
+
+    if (!Array.isArray(vehicles) || vehicles.length === 0) {
+      return res.status(400).json({ error: "Body must be a non-empty array" });
+    }
+
+    console.log(`Received ${vehicles.length} vehicle records.`);
+
+    const chunkSize = 500;
+    const chunks = [];
+
+    for (let i = 0; i < vehicles.length; i += chunkSize) {
+      chunks.push(vehicles.slice(i, i + chunkSize));
+    }
+
+    
+    for (const [index, chunk] of chunks.entries()) {
+      const batch = db.batch();
+
+      chunk.forEach((vehicle) => {
+        const docRef = db.collection("Vehicles").doc(vehicle["Plate Number"]); 
+        batch.set(docRef, {
+          plateNumber: vehicle["Plate Number"] || null,
+          make: vehicle["Make"] || null,
+          model: vehicle["Model"] || null,
+          ownershipType: vehicle["Ownership Type"] || null,
+          from: vehicle["From"] || null,
+          to: vehicle["To"] || null,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      });
+
+      await batch.commit();
+      console.log(`✅ Chunk ${index + 1}/${chunks.length} inserted (${chunk.length} records)`);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `${vehicles.length} vehicles inserted successfully in ${chunks.length} chunks.`,
+    });
+  } catch (error) {
+    console.error("❌ Error inserting vehicles:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get("/getVehicles", async (req, res) => {
+  try {
+    const snapshot = await db.collection("Vehicles").get();
+
+    if (snapshot.empty) {
+      return res.status(200).json({
+        success: true,
+        total: 0,
+        vehicles: [],
+        message: "No vehicles found."
+      });
+    }
+
+    const vehicles = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        plateNumber: data.plateNumber || "",
+        make: data.make || "",
+        model: data.model || "",
+        ownershipType: data.ownershipType || "",
+        from: data.from || "",
+        to: data.to || ""
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      total: vehicles.length,
+      vehicles
+    });
+  } catch (error) {
+    console.error("❌ Error fetching vehicles:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.put("/updateVehicle/:plateNumber", async (req, res) => {
+  try {
+    const plateNumber = req.params.plateNumber;
+    const updateData = req.body;
+
+    if (!plateNumber) {
+      return res.status(400).json({ error: "Vehicle plate number is required" });
+    }
+
+    if (!updateData || Object.keys(updateData).length === 0) {
+      return res.status(400).json({ error: "Request body must contain update data" });
+    }
+
+    const docRef = db.collection("Vehicles").doc(plateNumber);
+    const docSnapshot = await docRef.get();
+
+    if (!docSnapshot.exists) {
+      return res.status(404).json({ error: `Vehicle ${plateNumber} not found` });
+    }
+
+    await docRef.update({
+      ...updateData,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `✅ Vehicle ${plateNumber} updated successfully`,
+      updatedFields: updateData,
+    });
+  } catch (error) {
+    console.error("❌ Error updating vehicle:", error);
+    return res.status(500).json({ error: "Failed to update vehicle" });
   }
 });
 
