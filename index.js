@@ -189,7 +189,8 @@ app.post("/bulkAddVehicles", async (req, res) => {
 
 app.get("/getVehicles", async (req, res) => {
   try {
-    const snapshot = await db.collection("Vehicles").get();
+    //const snapshot = await db.collection("Vehicles").get();
+    const snapshot = await db.collection("Vehicles").limit(100).get();
 
     if (snapshot.empty) {
       return res.status(200).json({
