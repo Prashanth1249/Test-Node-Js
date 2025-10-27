@@ -225,6 +225,44 @@ app.get("/getVehicles", async (req, res) => {
   }
 });
 
+app.get("/getAllVehicles", async (req, res) => {
+  try {
+    const snapshot = await db.collection("Vehicles").get();
+    //const snapshot = await db.collection("Vehicles").limit(100).get();
+
+    if (snapshot.empty) {
+      return res.status(200).json({
+        success: true,
+        total: 0,
+        vehicles: [],
+        message: "No vehicles found."
+      });
+    }
+
+    const vehicles = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        plateNumber: data.plateNumber || "",
+        make: data.make || "",
+        model: data.model || "",
+        ownershipType: data.ownershipType || "",
+        from: data.from || "",
+        to: data.to || ""
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      total: vehicles.length,
+      vehicles
+    });
+  } catch (error) {
+    console.error("❌ Error fetching vehicles:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.put("/updateVehicle/:plateNumber", async (req, res) => {
   try {
     const plateNumber = req.params.plateNumber;
